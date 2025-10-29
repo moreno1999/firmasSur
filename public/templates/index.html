@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Plantillas PDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">Proyecto Firmas - Sistema Original</div>
+        <div class="navbar-nav">
+            <a href="../dashboard" class="nav-link">Volver al Dashboard React</a>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="sidebar">
+            <h2>Plantillas PDF</h2>
+            
+            <div class="templates-section">
+                <h3>Plantillas Guardadas</h3>
+                <div id="templatesList" class="templates-list">
+                    <!-- Se llena dinámicamente -->
+                </div>
+                <button id="newTemplateBtn" class="btn btn-primary">Nueva Plantilla</button>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="tabs">
+                <button class="tab active" data-tab="design">Diseñar</button>
+                <button class="tab" data-tab="fill">Rellenar</button>
+            </div>
+
+            <!-- Pestaña Diseñar -->
+            <div id="designTab" class="tab-content">
+                <div class="template-form">
+                    <div class="form-group">
+                        <label>Nombre de la plantilla:</label>
+                        <input type="text" id="templateName" placeholder="Ej: Contrato de Compraventa" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Título del documento:</label>
+                        <input type="text" id="templateTitle" placeholder="Título que aparecerá en el PDF" />
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tamaño de página:</label>
+                            <select id="pageSize">
+                                <option value="carta">Carta</option>
+                                <option value="oficio" selected>Oficio</option>
+                                <option value="a4">A4</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tamaño de fuente:</label>
+                            <input type="number" id="fontSize" value="12" min="8" max="24" />
+                        </div>
+                        <div class="form-group">
+                            <label>Tamaño fuente título:</label>
+                            <input type="number" id="titleFontSize" value="20" min="12" max="36" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Contenido de la plantilla:</label>
+                        <textarea 
+                            id="templateContent" 
+                            rows="15" 
+                            placeholder="Escriba el contenido de su plantilla aquí. Use {{variable}} para campos dinámicos."
+                        ></textarea>
+                    </div>
+
+                    <div class="form-actions">
+                        <button id="saveTemplateBtn" class="btn btn-success">Guardar Plantilla</button>
+                        <button id="downloadTemplateBtn" class="btn btn-info">Descargar JSON</button>
+                    </div>
+                </div>
+
+                <div class="preview-section">
+                    <h3>Vista Previa</h3>
+                    <iframe 
+                        id="pdfPreview" 
+                        style="width: 100%; height: 600px; border: 1px solid #ddd; border-radius: 6px; background: #fff;"
+                        title="Vista previa de la plantilla"
+                    ></iframe>
+                </div>
+            </div>
+
+            <!-- Pestaña Rellenar -->
+            <div id="fillTab" class="tab-content" style="display: none;">
+                <div class="fill-form">
+                    <div class="template-info">
+                        <h3 id="currentTemplateName">Seleccione una plantilla</h3>
+                    </div>
+
+                    <div id="formFields" class="form-fields">
+                        <!-- Se genera dinámicamente -->
+                    </div>
+
+                    <!-- Controles para firmas -->
+                    <div class="signature-controls" style="background: #f0f8ff; padding: 1rem; margin: 1rem 0; border-radius: 6px; border: 1px solid #b8daff;">
+                        <h4 style="margin-top: 0; color: #004085;">Agregar Campos de Firma</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Tipo de Firma:</label>
+                                <select id="signatureType">
+                                    <option value="Compareciente">Compareciente</option>
+                                    <option value="Representante">Representante</option>
+                                    <option value="Testigo">Testigo</option>
+                                    <option value="Notario">Notario</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Número (opcional):</label>
+                                <input type="number" id="signatureNumber" min="1" max="10" placeholder="1, 2, 3...">
+                            </div>
+                        </div>
+                        <p style="font-size: 0.9rem; color: #004085; margin-bottom: 0;">
+                            💡 <strong>Instrucciones:</strong> Selecciona el tipo y número, luego haz clic en el canvas donde quieres colocar el campo de firma.
+                        </p>
+                    </div>
+
+                    <div class="form-actions">
+                        <button id="generatePdfBtn" class="btn btn-success">Generar PDF</button>
+                    </div>
+                </div>
+
+                <div class="canvas-section">
+                    <h3>Vista Previa con Firmas</h3>
+                    
+                    <!-- Instrucciones para el canvas -->
+                    <div style="background: #fff3cd; padding: 0.75rem; margin-bottom: 1rem; border-radius: 4px; border: 1px solid #ffeaa7; font-size: 0.85rem;">
+                        <strong>Cómo usar:</strong><br>
+                        • <strong>Crear firma:</strong> Clic izquierdo en el canvas<br>
+                        • <strong>Mover firma:</strong> Arrastra el recuadro rojo<br>
+                        • <strong>Redimensionar:</strong> Arrastra la esquina inferior derecha<br>
+                        • <strong>Eliminar:</strong> Clic derecho sobre el recuadro
+                    </div>
+
+                    <div class="canvas-controls">
+                        <button id="prevPageBtn" class="btn btn-secondary">« Anterior</button>
+                        <span id="pageIndicator">Página 1 de 1</span>
+                        <button id="nextPageBtn" class="btn btn-secondary">Siguiente »</button>
+                    </div>
+                    
+                    <div class="canvas-container">
+                        <canvas id="signatureCanvas" width="612" height="1008" style="border: 2px solid #007bff; cursor: crosshair;"></canvas>
+                    </div>
+                    
+                    <!-- Información de coordenadas de firmas -->
+                    <div class="signature-info" style="margin-top: 1rem; background: #f8f9fa; padding: 1rem; border-radius: 6px; border: 1px solid #e9ecef;">
+                        <h5 style="margin-top: 0; color: #495057;">Coordenadas de Firmas:</h5>
+                        <pre id="signatureFieldsJson" style="font-size: 0.75rem; color: #6c757d; margin: 0; white-space: pre-wrap; max-height: 150px; overflow-y: auto;">
+No hay campos de firma
+                        </pre>
+                    </div>
+                    
+                    <iframe id="generatedPdfPreview" style="margin-top: 1rem;"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel flotante para insertar variables -->
+        <div id="insertVarPanel" class="insert-var-panel">
+            <div id="insertVarPanelHeader" class="panel-header">
+                <span>Insertar Variables</span>
+                <button id="minimizeInsertVarPanel" class="minimize-btn">−</button>
+            </div>
+            <div class="panel-content">
+                <div class="form-group">
+                    <label>Categoría:</label>
+                    <select id="categoriaSelect">
+                        <option value="">Seleccione categoría</option>
+                        <option value="compareciente">Compareciente</option>
+                        <option value="representante">Representante</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Índice:</label>
+                    <select id="indiceSelect">
+                        <option value="">Seleccione n° de índice</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Campo:</label>
+                    <select id="campoSelect">
+                        <option value="">Seleccione campo</option>
+                    </select>
+                </div>
+                <button id="insertVarBtn" class="btn btn-primary">Insertar Variable</button>
+            </div>
+        </div>
+
+        <!-- JSON de campos de firma -->
+        <div id="signatureFieldsJson" style="display: none;"></div>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+</body>
+</html>

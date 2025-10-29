@@ -1,0 +1,276 @@
+:root {
+    --primary-color: #3498db;
+    --primary-dark: #2980b9;
+    --danger-color: #e74c3c;
+    --danger-dark: #8e0000;
+    --background-color: #f5f7fa;
+    --sidebar-bg: #2c3e50;
+    --text-color: #333;
+    --muted-text: #7f8c8d;
+    --card-bg: #fff;
+    --border-color: #000000;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: clamp(10px, 3vw, 24px);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+.app-container {
+    display: flex;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 300px;
+    background: var(--sidebar-bg);
+    color: white;
+    padding: 20px;
+}
+
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 80%;
+    padding: 32px 10px;
+}
+
+
+h1,h2 {
+    font-size: 1.5em;
+    margin-bottom: 16px;
+}
+h3{
+    font-size: larger;
+}
+
+/* TARJETAS DE DOCUMENTOS CREADOS */
+.template-card {
+    background: var(--card-bg);
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-left: 4px solid var(--primary-color);
+    color: var(--text-color);
+    position: relative;
+}
+
+.template-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+.template-card.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+.template-card .delete-button {
+    background-color: var(--danger-color);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+    position: absolute;
+    bottom: 1px;
+    right: 10px;
+    transition: background 0.3s;
+}
+
+.template-card .delete-button:hover {
+    background-color: darkred;
+}
+
+.template-card.active .delete-button {
+    background-color: var(--danger-color);
+}
+
+.template-card.active .delete-button:hover {
+    background-color: var(--danger-dark);
+}
+
+button {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+    margin-bottom: 15px;
+}
+
+button:hover {
+    background: var(--primary-dark);
+}
+
+input[type="text"], textarea, select {
+    width: 70%;
+    padding: 8px;
+
+    /* Ancho minimo */
+    min-width: 220px;  
+    /* max-width: 400px; */
+    margin: 0 auto;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    box-sizing: border-box;
+    font-size: 14px;
+    transition: all 0.2s ease-in-out;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    
+}
+
+/* Estilo botones bajo la firma de rellenar plantilla */
+.form-group-buttons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+/* VISTA PREVIA PDF */
+.pdf-preview {
+    margin-top: 10px;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+    padding: 30px;
+    background: #0000006c;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.pdf-preview iframe {
+    width: 100%;
+    height: 1000px; /*  altura fija */
+    background: #00000000;
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(223, 1, 1, 0.03);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--muted-text);
+}
+
+.tab-container {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+    transition: border-color 0.2s ease-in-out;
+}
+
+.tab.active {
+    border-bottom: 3px solid var(--primary-color);
+    font-weight: bold;
+}
+
+small {
+    color: #000;
+    font-size: 0.9em;
+}
+
+#templatesList {
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+}
+
+
+
+/* Centrado y estilo profesional para el canvas de firma */
+.signature-canvas-container {
+    background: #f0f0f0;
+    padding: 32px 0;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 32px auto;
+    max-width: 1000px;
+    min-height: 1000px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+}
+
+
+#signatureCanvas {
+    width: 100%;
+    max-width: 900px;
+    height: auto;
+    aspect-ratio: 612/792;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+    border: 1px solid #bbb;
+    background: #fff;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* CUADRO FLOTANTE PARA INSERTAR CAMPOS DINAMICOS, agrandar y experandir cuadro arrastrable  */
+.insert-var-panel{
+    position: fixed;
+    top: 80px;
+    right: 40px;
+    width: 320px;
+    background: #fff;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+    z-index:2000;
+    padding: 24px 18px 18px 18px;
+    transition: box-shadow 0.2s;
+    user-select: none;
+}
+
+.insert-var-panel-header{
+    cursor: move;
+    padding: 12px 0 6px 0;
+    border-bottom: 1px solid #eee;
+    background:#f8f9fa ;
+    border-radius: 10px 10px 0 0 ;
+}
+
+.insert-var-panel.minimized form{
+    display: none;
+}
+
+.insert-var-panel.minimized{
+    height: auto !important;
+    width: 200px !important;
+    padding-bottom: 0;
+}
+
